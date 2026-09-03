@@ -1,0 +1,78 @@
+@model NewsWebApp.Models.Article
+
+@{
+    ViewData["Title"] = "Edit Article";
+    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
+    var users = ViewBag.Users as List<User> ?? new List<User>();
+    var postedHeadLine = ViewData.ModelState["headLine"]?.AttemptedValue ?? Model.HeadLine;
+    var postedBody = ViewData.ModelState["body"]?.AttemptedValue ?? Model.Body;
+    var postedCategory = ViewData.ModelState["categoryName"]?.AttemptedValue ?? Model.Category?.Name ?? "";
+    var postedAuthor = ViewData.ModelState["authorId"]?.AttemptedValue ?? Model.Author?.Id.ToString() ?? "";
+}
+
+<section class="form-shell">
+    <div class="page-header">
+        <div>
+            <span class="page-kicker">Редакција</span>
+            <h1>Edit Article</h1>
+        </div>
+    </div>
+
+    <form class="form-card"
+          asp-action="Edit"
+          asp-route-id="@Model.Pid"
+          method="post">
+        <div asp-validation-summary="All"></div>
+
+        <div class="form-group">
+            <label for="headLine">Headline</label>
+            <input id="headLine"
+                   name="headLine"
+                   value="@postedHeadLine"
+                   required />
+        </div>
+
+        <div class="form-group">
+            <label for="categoryName">Category</label>
+            <select id="categoryName" name="categoryName" required>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Name"
+                            selected="@(postedCategory == category.Name)">
+                        @category.Name
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="authorId">Author</label>
+            <select id="authorId" name="authorId" required>
+                @foreach (var user in users)
+                {
+                    <option value="@user.Id"
+                            selected="@(postedAuthor == user.Id.ToString())">
+                        @user.Name @user.Surname
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="body">Article body</label>
+            <textarea id="body"
+                      name="body"
+                      required>@postedBody</textarea>
+        </div>
+
+        <div class="detail-actions">
+            <button class="button" type="submit">Save changes</button>
+            <a class="button-secondary"
+               asp-controller="Articles"
+               asp-action="Details"
+               asp-route-id="@Model.Pid">
+                Cancel
+            </a>
+        </div>
+    </form>
+</section>

@@ -1,0 +1,26 @@
+@model NewsWebApp.Models.Category
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<section class="profile-panel">
+    <span class="page-kicker">Рубрика</span>
+    <h1>@Model.Name</h1>
+    <p class="profile-muted">@Model.Description</p>
+
+    <div class="detail-actions">
+        <a class="button"
+           asp-controller="Articles"
+           asp-action="Category"
+           asp-route-categoryName="@Model.Name">
+            Open articles
+        </a>
+
+        <a class="button-secondary"
+           asp-controller="Category"
+           asp-action="Index">
+            Back to categories
+        </a>
+    </div>
+</section>

@@ -1,0 +1,35 @@
+@{
+    ViewData["Title"] = "New Category";
+    var postedName = ViewData.ModelState["categoryName"]?.AttemptedValue ?? "";
+    var postedDescription = ViewData.ModelState["categoryDescription"]?.AttemptedValue ?? "";
+}
+
+<section class="form-shell">
+    <div class="page-header">
+        <div>
+            <span class="page-kicker">Рубрики</span>
+            <h1>New Category</h1>
+        </div>
+    </div>
+
+    <form class="form-card" asp-action="Create" method="post">
+        <div asp-validation-summary="All"></div>
+
+        <div class="form-group">
+            <label for="categoryName">Name</label>
+            <input id="categoryName"
+                   name="categoryName"
+                   value="@postedName"
+                   required />
+        </div>
+
+        <div class="form-group">
+            <label for="categoryDescription">Description</label>
+            <textarea id="categoryDescription"
+                      name="categoryDescription"
+                      required>@postedDescription</textarea>
+        </div>
+
+        <button class="button" type="submit">Create category</button>
+    </form>
+</section>

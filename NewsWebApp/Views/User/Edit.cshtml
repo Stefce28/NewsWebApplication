@@ -1,0 +1,51 @@
+@model NewsWebApp.Models.User
+
+@{
+    ViewData["Title"] = "Edit Profile";
+    var postedName = ViewData.ModelState["name"]?.AttemptedValue ?? Model.Name;
+    var postedSurname = ViewData.ModelState["surname"]?.AttemptedValue ?? Model.Surname;
+    var postedEmail = ViewData.ModelState["email"]?.AttemptedValue ?? Model.Email;
+}
+
+<section class="form-shell">
+    <div class="page-header">
+        <div>
+            <span class="page-kicker">Автор</span>
+            <h1>Edit Profile</h1>
+        </div>
+    </div>
+
+    <form class="form-card"
+          asp-action="Edit"
+          asp-route-id="@Model.Id"
+          method="post">
+        <div asp-validation-summary="All"></div>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input id="name"
+                   name="name"
+                   value="@postedName"
+                   required />
+        </div>
+
+        <div class="form-group">
+            <label for="surname">Surname</label>
+            <input id="surname"
+                   name="surname"
+                   value="@postedSurname"
+                   required />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email"
+                   type="email"
+                   name="email"
+                   value="@postedEmail"
+                   required />
+        </div>
+
+        <button class="button" type="submit">Save profile</button>
+    </form>
+</section>

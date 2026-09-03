@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Шокантно.мк</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="site-container nav-container">
+        <a class="brand"
+           asp-controller="Articles"
+           asp-action="Index">
+            Шокантно.мк
+        </a>
+
+        <nav class="main-nav" aria-label="Главна навигација">
+            <a asp-controller="Articles"
+               asp-action="Index">
+                Home
+            </a>
+
+            <a asp-controller="Category"
+               asp-action="Index">
+                Categories
+            </a>
+
+            <a class="nav-highlight"
+               asp-controller="Articles"
+               asp-action="Create">
+                New Article
+            </a>
+        </nav>
+
+        <div class="account-nav">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <span class="account-name">@User.Identity.Name</span>
+                <form class="logout-form"
+                      asp-controller="Account"
+                      asp-action="Logout"
+                      method="post">
+                    <button class="link-button" type="submit">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account"
+                   asp-action="Login">
+                    Login
+                </a>
+
+                <a class="account-register"
+                   asp-controller="Account"
+                   asp-action="Register">
+                    Register
+                </a>
+            }
+        </div>
+    </div>
+</header>
+
+<main class="site-container main-content">
+    @RenderBody()
+</main>
+
+<footer class="site-footer">
+    <div class="site-container">
+        <p>© 2026 Шокантно.мк</p>
+    </div>
+</footer>
+
+@await RenderSectionAsync(
+    "Scripts",
+    required: false
+)
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+@{
+    ViewData["Title"] = "New Article";
+    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
+    var users = ViewBag.Users as List<User> ?? new List<User>();
+    var postedHeadLine = ViewData.ModelState["headLine"]?.AttemptedValue ?? "";
+    var postedBody = ViewData.ModelState["body"]?.AttemptedValue ?? "";
+    var postedCategory = ViewData.ModelState["categoryName"]?.AttemptedValue ?? "";
+    var postedAuthor = ViewData.ModelState["authorId"]?.AttemptedValue ?? "";
+}
+
+<section class="form-shell">
+    <div class="page-header">
+        <div>
+            <span class="page-kicker">Редакција</span>
+            <h1>New Article</h1>
+        </div>
+    </div>
+
+    <form class="form-card" asp-action="Create" method="post">
+        <div asp-validation-summary="All"></div>
+
+        <div class="form-group">
+            <label for="headLine">Headline</label>
+            <input id="headLine"
+                   name="headLine"
+                   value="@postedHeadLine"
+                   required />
+        </div>
+
+        <div class="form-group">
+            <label for="categoryName">Category</label>
+            <select id="categoryName" name="categoryName" required>
+                <option value="">Select category</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Name"
+                            selected="@(postedCategory == category.Name)">
+                        @category.Name
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="authorId">Author</label>
+            <select id="authorId" name="authorId" required>
+                <option value="">Select author</option>
+                @foreach (var user in users)
+                {
+                    <option value="@user.Id"
+                            selected="@(postedAuthor == user.Id.ToString())">
+                        @user.Name @user.Surname
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="body">Article body</label>
+            <textarea id="body"
+                      name="body"
+                      required>@postedBody</textarea>
+        </div>
+
+        <button class="button" type="submit">Publish</button>
+    </form>
+</section>

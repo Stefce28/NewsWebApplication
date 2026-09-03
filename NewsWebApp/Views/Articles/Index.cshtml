@@ -1,0 +1,161 @@
+@model ArticleListViewModel
+
+@{
+    var pageTitle = Model.Title ?? "Најнови вести";
+    ViewData["Title"] = pageTitle;
+
+    Func<int, string> pageUrl = page =>
+    {
+        if (!string.IsNullOrWhiteSpace(Model.CategoryName))
+        {
+            return Url.Action(
+                "Category",
+                "Articles",
+                new { categoryName = Model.CategoryName, page }
+            ) ?? "#";
+        }
+
+        if (Model.AuthorId.HasValue)
+        {
+            return Url.Action(
+                "ByAuthor",
+                "Articles",
+                new { authorId = Model.AuthorId.Value, page }
+            ) ?? "#";
+        }
+
+        return Url.Action(
+            "Index",
+            "Articles",
+            new { page }
+        ) ?? "#";
+    };
+}
+
+@functions {
+    private static string GetPreview(string? body, int maxLength = 180)
+    {
+        if (string.IsNullOrWhiteSpace(body))
+        {
+            return "";
+        }
+
+        var normalized = body
+            .Replace("\r", " ")
+            .Replace("\n", " ")
+            .Trim();
+
+        if (normalized.Length <= maxLength)
+        {
+            return normalized;
+        }
+
+        return normalized[..maxLength].TrimEnd() + "...";
+    }
+}
+
+<section class="page-header">
+    <div>
+        <span class="page-kicker">Шокантно.мк</span>
+        <h1>@pageTitle</h1>
+        <p class="page-subtitle">
+            Брз преглед на најважните приказни, подреден за читање без врева.
+        </p>
+    </div>
+</section>
+
+@if (Model.Articles.Count == 0)
+{
+    <div class="empty-state">
+        <p>Нема пронајдени статии.</p>
+    </div>
+}
+else
+{
+    <section class="article-grid" aria-label="Листа на статии">
+        @foreach (var article in Model.Articles)
+        {
+            <article class="article-card">
+                @if (article.Category != null)
+                {
+                    <a class="category-badge"
+                       asp-controller="Articles"
+                       asp-action="Category"
+                       asp-route-categoryName="@article.Category.Name">
+                        @article.Category.Name
+                    </a>
+                }
+
+                <h2>
+                    <a asp-controller="Articles"
+                       asp-action="Details"
+                       asp-route-id="@article.Pid">
+                        @article.HeadLine
+                    </a>
+                </h2>
+
+                <div class="article-body-preview">
+                    @GetPreview(article.Body)
+                </div>
+
+                <div class="article-meta">
+                    <span>Автор</span>
+
+                    @if (article.Author != null)
+                    {
+                        <a asp-controller="Articles"
+                           asp-action="ByAuthor"
+                           asp-route-authorId="@article.Author.Id">
+                            @article.Author.Name @article.Author.Surname
+                        </a>
+                    }
+                    else
+                    {
+                        <span>Редакција</span>
+                    }
+                </div>
+
+                <div class="article-card-actions">
+                    <a class="read-more"
+                       asp-controller="Articles"
+                       asp-action="Details"
+                       asp-route-id="@article.Pid">
+                        Read more
+                    </a>
+                </div>
+            </article>
+        }
+    </section>
+}
+
+@if (Model.TotalPages > 1)
+{
+    <nav class="pagination" aria-label="Страници">
+        @if (Model.CurrentPage > 1)
+        {
+            <a class="pager-link" href="@pageUrl(Model.CurrentPage - 1)">Previous</a>
+        }
+        else
+        {
+            <span class="pager-disabled">Previous</span>
+        }
+
+        @for (var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
+        {
+            <a class="pager-link @(pageNumber == Model.CurrentPage ? "is-active" : "")"
+               href="@pageUrl(pageNumber)"
+               aria-current="@(pageNumber == Model.CurrentPage ? "page" : null)">
+                @pageNumber
+            </a>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a class="pager-link" href="@pageUrl(Model.CurrentPage + 1)">Next</a>
+        }
+        else
+        {
+            <span class="pager-disabled">Next</span>
+        }
+    </nav>
+}

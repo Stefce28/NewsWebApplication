@@ -1,0 +1,66 @@
+@model NewsWebApp.Models.Article
+
+@{
+    ViewData["Title"] = Model.HeadLine;
+}
+
+<article class="article-detail">
+    @if (Model.Category != null)
+    {
+        <a class="category-badge"
+           asp-controller="Articles"
+           asp-action="Category"
+           asp-route-categoryName="@Model.Category.Name">
+            @Model.Category.Name
+        </a>
+    }
+
+    <h1>@Model.HeadLine</h1>
+
+    <div class="article-meta">
+        <span>Автор</span>
+
+        @if (Model.Author != null)
+        {
+            <a asp-controller="Articles"
+               asp-action="ByAuthor"
+               asp-route-authorId="@Model.Author.Id">
+                @Model.Author.Name @Model.Author.Surname
+            </a>
+        }
+        else
+        {
+            <span>Редакција</span>
+        }
+    </div>
+
+    <div class="article-body">
+        @Model.Body
+    </div>
+
+    <div class="detail-actions">
+        <a class="button-secondary"
+           asp-controller="Articles"
+           asp-action="Index">
+            Back to articles
+        </a>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a class="button"
+               asp-controller="Articles"
+               asp-action="Edit"
+               asp-route-id="@Model.Pid">
+                Edit
+            </a>
+
+            <form class="inline-form"
+                  asp-controller="Articles"
+                  asp-action="Delete"
+                  asp-route-id="@Model.Pid"
+                  method="post">
+                <button class="button-danger" type="submit">Delete</button>
+            </form>
+        }
+    </div>
+</article>

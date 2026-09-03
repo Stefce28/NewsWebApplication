@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Login";
+    var postedEmail = ViewData.ModelState["email"]?.AttemptedValue ?? "";
+}
+
+<section class="auth-shell">
+    <div class="page-header">
+        <div>
+            <span class="page-kicker">Account</span>
+            <h1>Login</h1>
+        </div>
+    </div>
+
+    <form class="form-card" asp-action="Login" method="post">
+        <div asp-validation-summary="All"></div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email"
+                   type="email"
+                   name="email"
+                   value="@postedEmail"
+                   required />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password"
+                   type="password"
+                   name="password"
+                   required />
+        </div>
+
+        <button class="button" type="submit">Login</button>
+    </form>
+</section>

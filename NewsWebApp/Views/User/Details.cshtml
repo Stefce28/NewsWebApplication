@@ -1,0 +1,59 @@
+@model NewsWebApp.Models.User
+
+@{
+    ViewData["Title"] = $"{Model.Name} {Model.Surname}";
+}
+
+<section class="profile-panel">
+    <span class="page-kicker">Автор</span>
+    <h1>@Model.Name @Model.Surname</h1>
+    <p class="profile-muted">@Model.Email</p>
+
+    <div class="detail-actions">
+        <a class="button"
+           asp-controller="Articles"
+           asp-action="ByAuthor"
+           asp-route-authorId="@Model.Id">
+            Open articles
+        </a>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a class="button-secondary"
+               asp-controller="User"
+               asp-action="Edit"
+               asp-route-id="@Model.Id">
+                Edit profile
+            </a>
+        }
+    </div>
+</section>
+
+<section class="profile-panel">
+    <h2>Articles</h2>
+
+    @if (Model.Posts.Count == 0)
+    {
+        <p class="profile-muted">Овој автор сè уште нема објавени статии.</p>
+    }
+    else
+    {
+        <ul class="profile-list">
+            @foreach (var article in Model.Posts)
+            {
+                <li>
+                    <a asp-controller="Articles"
+                       asp-action="Details"
+                       asp-route-id="@article.Pid">
+                        @article.HeadLine
+                    </a>
+
+                    @if (article.Category != null)
+                    {
+                        <span class="profile-muted"> · @article.Category.Name</span>
+                    }
+                </li>
+            }
+        </ul>
+    }
+</section>

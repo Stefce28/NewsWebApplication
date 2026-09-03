@@ -1,0 +1,47 @@
+@model List<NewsWebApp.Models.Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<section class="page-header">
+    <div>
+        <span class="page-kicker">Рубрики</span>
+        <h1>Categories</h1>
+        <p class="page-subtitle">Избери рубрика и отвори ја истата листа на статии со активен филтер.</p>
+    </div>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a class="button"
+           asp-controller="Category"
+           asp-action="Create">
+            New Category
+        </a>
+    }
+</section>
+
+@if (Model.Count == 0)
+{
+    <div class="empty-state">
+        <p>Нема внесени категории.</p>
+    </div>
+}
+else
+{
+    <section class="category-grid" aria-label="Категории">
+        @foreach (var category in Model)
+        {
+            <article class="category-card">
+                <h2>@category.Name</h2>
+                <p>@category.Description</p>
+                <a class="read-more"
+                   asp-controller="Articles"
+                   asp-action="Category"
+                   asp-route-categoryName="@category.Name">
+                    Open category
+                </a>
+            </article>
+        }
+    </section>
+}
