@@ -10,19 +10,25 @@ using NewsWebApp.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Conventions.Add(new ControllerAuthorizationConvention());
+});
+builder.Services.AddAuthorization();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
-
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Conventions.Add(new ControllerAuthorizationConvention());
-});
-builder.Services.AddAuthorization();
 
 builder.Services
     .AddIdentity<User, IdentityRole<Guid>>(options =>
@@ -42,6 +48,7 @@ builder.Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IShockService, ShockService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
@@ -70,6 +77,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,3 +1,9 @@
+@inject NewsWebApp.Services.IServices.IShockService ShockService
+@{
+    var shockStatus = ShockService.GetShockStatus();
+    var shockPercent = shockStatus.CurrentPercentage.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    var overloadBodyClass = shockStatus.ShouldAnimateOverload ? "shock-overload-pulse" : "";
+}
 <!DOCTYPE html>
 <html lang="mk">
 <head>
@@ -9,7 +15,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
-<body>
+<body class="shock-level-@shockStatus.LevelClass @overloadBodyClass">
 
 <header class="site-header">
     <div class="site-container nav-container">
@@ -63,6 +69,22 @@
             }
         </div>
     </div>
+
+    <section class="shock-meter shock-meter-@shockStatus.LevelClass" aria-label="Your shock level">
+        <div class="site-container shock-meter-inner">
+            <span class="shock-meter-label">YOUR SHOCK LEVEL</span>
+
+            <div class="shock-meter-track"
+                 role="progressbar"
+                 aria-valuemin="0"
+                 aria-valuemax="100"
+                 aria-valuenow="@shockStatus.CurrentPercentage">
+                <div class="shock-meter-fill" style="width: @(shockPercent)%"></div>
+            </div>
+
+            <strong class="shock-meter-value">@(shockStatus.CurrentPercentage)%</strong>
+        </div>
+    </section>
 </header>
 
 <main class="site-container main-content">
@@ -75,6 +97,24 @@
     </div>
 </footer>
 
+@if (shockStatus.IsInCooldown)
+{
+    <div class="shock-overload-overlay @(shockStatus.ShouldAnimateOverload ? "is-new" : "")"
+         data-shock-overload
+         data-cooldown-until="@shockStatus.CooldownEndsAtUnixMilliseconds"
+         data-reset-url="@Url.Action("Reset", "Shock")">
+        <div class="shock-overload-panel">
+            <span class="shock-overload-title">SHOCK OVERLOAD</span>
+            <p>@shockStatus.OverloadMessage</p>
+            <p class="shock-overload-cooldown">
+                Cooldown
+                <strong data-shock-countdown>01:00</strong>
+            </p>
+        </div>
+    </div>
+}
+
+<script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync(
     "Scripts",
     required: false

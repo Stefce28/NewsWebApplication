@@ -11,15 +11,18 @@ public class ArticlesController : Controller
 
     private readonly IArticleService _articleService;
     private readonly ICategoryService _categoryService;
+    private readonly IShockService _shockService;
     private readonly IUserService _userService;
 
     public ArticlesController(
         IArticleService articleService,
         ICategoryService categoryService,
+        IShockService shockService,
         IUserService userService)
     {
         _articleService = articleService;
         _categoryService = categoryService;
+        _shockService = shockService;
         _userService = userService;
     }
 
@@ -42,6 +45,8 @@ public class ArticlesController : Controller
 
         if (article == null)
             return NotFound();
+
+        _shockService.AddShockFromArticle(article);
 
         return View(article);
     }
