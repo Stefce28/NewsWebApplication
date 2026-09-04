@@ -107,7 +107,8 @@ public class ArticlesController : Controller
         string headLine,
         string body,
         string categoryName,
-        Guid authorId)
+        Guid authorId,
+        decimal shockValue)
     {
         await LoadArticleFormOptions();
 
@@ -142,7 +143,8 @@ public class ArticlesController : Controller
                 headLine,
                 body,
                 category,
-                author
+                author,
+                shockValue
             );
 
         if (article == null)
@@ -184,7 +186,8 @@ public class ArticlesController : Controller
         string headLine,
         string body,
         string categoryName,
-        Guid authorId)
+        Guid authorId,
+        decimal shockValue)
     {
         var article = await _articleService.GetArticleById(id);
 
@@ -225,7 +228,8 @@ public class ArticlesController : Controller
                 headLine,
                 body,
                 category,
-                author
+                author,
+                shockValue
             );
 
         if (updatedArticle == null)
