@@ -5,6 +5,7 @@ using NewsWebApp.Models;
 using NewsWebApp.Repository;
 using NewsWebApp.Services;
 using NewsWebApp.Services.IServices;
+using NewsWebApp.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Conventions.Add(new ControllerAuthorizationConvention());
+});
+builder.Services.AddAuthorization();
 
 builder.Services
     .AddIdentity<User, IdentityRole<Guid>>(options =>

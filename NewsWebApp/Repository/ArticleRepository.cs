@@ -36,7 +36,7 @@ public class ArticleRepository : IArticleRepository
     public async Task<List<Article>> GetArticlesPage(int page, int pageSize)
     {
         return await ArticlesWithRelations()
-            .OrderBy(a => a.HeadLine)
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -46,7 +46,7 @@ public class ArticleRepository : IArticleRepository
     {
         return await ArticlesWithRelations()
             .Where(a => EF.Property<string>(a, "CategoryName") == categoryName)
-            .OrderBy(a => a.HeadLine)
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -56,7 +56,7 @@ public class ArticleRepository : IArticleRepository
     {
         return await ArticlesWithRelations()
             .Where(a => EF.Property<Guid>(a, "AuthorId") == authorId)
-            .OrderBy(a => a.HeadLine)
+            .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

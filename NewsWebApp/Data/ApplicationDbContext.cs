@@ -23,6 +23,14 @@ public class ApplicationDbContext
         base.OnModelCreating(builder);
 
         builder.Entity<Article>()
+            .Property(a => a.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        builder.Entity<Article>()
+            .Property(a => a.ShockValue)
+            .HasDefaultValue(0m);
+
+        builder.Entity<Article>()
             .HasOne(a => a.Author)
             .WithMany(u => u.Posts);
 

@@ -87,12 +87,12 @@ public class ArticleService : IArticleService
 
     }
 
-    public async Task<Article?> AddArticleAsync(String title, String content, Category? category,User? author)
+    public async Task<Article?> AddArticleAsync(String title, String content, Category? category,User? author, decimal shockValue)
     {
         if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(content) || category == null || author == null)
             return null;
 
-        Article article = new Article(title, content, category, author);
+        Article article = new Article(title, content, category, author, shockValue);
         await _articleRepository.SaveArticle(article);
         return article;
     }
@@ -106,7 +106,7 @@ public class ArticleService : IArticleService
         return true;
     }
 
-    public async Task<Article?> UpdateArticle(Guid id, string title, string content, Category category, User author)
+    public async Task<Article?> UpdateArticle(Guid id, string title, string content, Category category, User author, decimal shockValue)
     {
         var a = await GetArticleById(id);
         if (a == null)
@@ -117,6 +117,7 @@ public class ArticleService : IArticleService
         a.Body= content;
         a.Category = category;
         a.Author = author;
+        a.ShockValue = shockValue;
         await _articleRepository.UpdateArticle(a);
         return a;
     }

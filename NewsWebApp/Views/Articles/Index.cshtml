@@ -52,6 +52,16 @@
 
         return normalized[..maxLength].TrimEnd() + "...";
     }
+
+    private static string FormatArticleDate(DateTime createdAt)
+    {
+        return createdAt.ToLocalTime().ToString("dd.MM.yyyy");
+    }
+
+    private static string FormatShockValue(decimal shockValue)
+    {
+        return shockValue.ToString("0.#");
+    }
 }
 
 <section class="page-header">
@@ -76,15 +86,21 @@ else
         @foreach (var article in Model.Articles)
         {
             <article class="article-card">
-                @if (article.Category != null)
-                {
-                    <a class="category-badge"
-                       asp-controller="Articles"
-                       asp-action="Category"
-                       asp-route-categoryName="@article.Category.Name">
-                        @article.Category.Name
-                    </a>
-                }
+                <div class="article-card-top">
+                    @if (article.Category != null)
+                    {
+                        <a class="category-badge"
+                           asp-controller="Articles"
+                           asp-action="Category"
+                           asp-route-categoryName="@article.Category.Name">
+                            @article.Category.Name
+                        </a>
+                    }
+
+                    <span class="shock-badge" aria-label="Shock value">
+                        Шок @FormatShockValue(article.ShockValue)
+                    </span>
+                </div>
 
                 <h2>
                     <a asp-controller="Articles"
@@ -99,6 +115,13 @@ else
                 </div>
 
                 <div class="article-meta">
+                    <span class="article-date">
+                        Објавено
+                        <time datetime="@article.CreatedAt.ToUniversalTime().ToString("O")">
+                            @FormatArticleDate(article.CreatedAt)
+                        </time>
+                    </span>
+
                     <span>Автор</span>
 
                     @if (article.Author != null)
