@@ -4,20 +4,45 @@
     ViewData["Title"] = Model.HeadLine;
 }
 
-<article class="article-detail">
-    @if (Model.Category != null)
+@functions {
+    private static string FormatArticleDate(DateTime createdAt)
     {
-        <a class="category-badge"
-           asp-controller="Articles"
-           asp-action="Category"
-           asp-route-categoryName="@Model.Category.Name">
-            @Model.Category.Name
-        </a>
+        return createdAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm");
     }
+
+    private static string FormatShockValue(decimal shockValue)
+    {
+        return shockValue.ToString("0.#");
+    }
+}
+
+<article class="article-detail">
+    <div class="article-detail-top">
+        @if (Model.Category != null)
+        {
+            <a class="category-badge"
+               asp-controller="Articles"
+               asp-action="Category"
+               asp-route-categoryName="@Model.Category.Name">
+                @Model.Category.Name
+            </a>
+        }
+
+        <span class="shock-badge shock-badge-large" aria-label="Shock value">
+            Шок @FormatShockValue(Model.ShockValue)
+        </span>
+    </div>
 
     <h1>@Model.HeadLine</h1>
 
     <div class="article-meta">
+        <span class="article-date">
+            Објавено
+            <time datetime="@Model.CreatedAt.ToUniversalTime().ToString("O")">
+                @FormatArticleDate(Model.CreatedAt)
+            </time>
+        </span>
+
         <span>Автор</span>
 
         @if (Model.Author != null)

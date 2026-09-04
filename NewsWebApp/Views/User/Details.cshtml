@@ -4,6 +4,18 @@
     ViewData["Title"] = $"{Model.Name} {Model.Surname}";
 }
 
+@functions {
+    private static string FormatArticleDate(DateTime createdAt)
+    {
+        return createdAt.ToLocalTime().ToString("dd.MM.yyyy");
+    }
+
+    private static string FormatShockValue(decimal shockValue)
+    {
+        return shockValue.ToString("0.#");
+    }
+}
+
 <section class="profile-panel">
     <span class="page-kicker">Автор</span>
     <h1>@Model.Name @Model.Surname</h1>
@@ -42,16 +54,31 @@
             @foreach (var article in Model.Posts)
             {
                 <li>
-                    <a asp-controller="Articles"
-                       asp-action="Details"
-                       asp-route-id="@article.Pid">
-                        @article.HeadLine
-                    </a>
+                    <div class="profile-list-row">
+                        <a asp-controller="Articles"
+                           asp-action="Details"
+                           asp-route-id="@article.Pid">
+                            @article.HeadLine
+                        </a>
 
-                    @if (article.Category != null)
-                    {
-                        <span class="profile-muted"> · @article.Category.Name</span>
-                    }
+                        <span class="shock-badge shock-badge-small" aria-label="Shock value">
+                            Шок @FormatShockValue(article.ShockValue)
+                        </span>
+                    </div>
+
+                    <div class="profile-list-meta">
+                        @if (article.Category != null)
+                        {
+                            <span>@article.Category.Name</span>
+                        }
+
+                        <span>
+                            Објавено
+                            <time datetime="@article.CreatedAt.ToUniversalTime().ToString("O")">
+                                @FormatArticleDate(article.CreatedAt)
+                            </time>
+                        </span>
+                    </div>
                 </li>
             }
         </ul>
