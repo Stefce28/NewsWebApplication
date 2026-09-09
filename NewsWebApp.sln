@@ -1,6 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.9.12120.119 stable
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsWebApp", "NewsWebApp\NewsWebApp.csproj", "{BB8D87C4-3E03-4A3F-98EF-3351E433E45A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsWebApi", "NewsWebApi\NewsWebApi.csproj", "{C1E5D1C9-BE6F-8B64-D7BE-A19A5D10F589}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsWebApp.Shared", "NewsWebApp.Shared\NewsWebApp.Shared.csproj", "{F3A702A2-F0C6-451F-609D-CA2F6C3B0331}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +19,19 @@ Global
 		{BB8D87C4-3E03-4A3F-98EF-3351E433E45A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB8D87C4-3E03-4A3F-98EF-3351E433E45A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB8D87C4-3E03-4A3F-98EF-3351E433E45A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1E5D1C9-BE6F-8B64-D7BE-A19A5D10F589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1E5D1C9-BE6F-8B64-D7BE-A19A5D10F589}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1E5D1C9-BE6F-8B64-D7BE-A19A5D10F589}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1E5D1C9-BE6F-8B64-D7BE-A19A5D10F589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3A702A2-F0C6-451F-609D-CA2F6C3B0331}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3A702A2-F0C6-451F-609D-CA2F6C3B0331}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3A702A2-F0C6-451F-609D-CA2F6C3B0331}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3A702A2-F0C6-451F-609D-CA2F6C3B0331}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F5A3307B-88C2-4245-9F56-BDFD50B38ACE}
 	EndGlobalSection
 EndGlobal

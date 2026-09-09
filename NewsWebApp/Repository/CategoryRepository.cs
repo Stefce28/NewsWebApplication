@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NewsWebApp.Data;
-using NewsWebApp.Models;
-
+using NewsWebApp.Shared.Models;
 namespace NewsWebApp.Repository;
 
 public class CategoryRepository : ICategoryRepository

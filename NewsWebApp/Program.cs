@@ -1,18 +1,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NewsWebApp.Configuration;
 using NewsWebApp.Data;
-using NewsWebApp.Models;
 using NewsWebApp.Repository;
 using NewsWebApp.Services;
 using NewsWebApp.Services.IServices;
-using NewsWebApp.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews(options =>
 {
-    options.Conventions.Add(new ControllerAuthorizationConvention());
+    options.Conventions.Add(new ControllerAuthorizationConvention()
+    {
+    });
 });
 builder.Services.AddAuthorization();
 builder.Services.AddDistributedMemoryCache();

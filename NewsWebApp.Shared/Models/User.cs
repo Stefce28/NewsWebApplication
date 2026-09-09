@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Identity;
-
-namespace NewsWebApp.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
 public class User : IdentityUser<Guid>
 {

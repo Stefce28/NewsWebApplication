@@ -1,5 +1,6 @@
-using NewsWebApp.Models;
+using NewsWebApp.Shared.Models;
 using NewsWebApp.ViewModels;
+ 
 
 namespace NewsWebApp.Services.IServices;
 
@@ -12,4 +13,5 @@ public interface IArticleService
     Task<Article?> AddArticleAsync(String title, String content, Category category,User author, decimal shockValue);
     Task<bool> DeleteArticleAsync(Guid id);
     Task<Article?> UpdateArticle(Guid id, String title, String content, Category category, User author, decimal shockValue);
+   
 }

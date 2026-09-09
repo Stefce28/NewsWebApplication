@@ -1,15 +1,17 @@
+﻿using NewsWebApp.Shared.Models;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
-namespace NewsWebApp.Models;
+using System.Text;
 
 public class Article
 {
     [Required]
     public string HeadLine { get; set; } = string.Empty;
     [Required]
-    public string Body  { get; set; } = string.Empty;
+    public string Body { get; set; } = string.Empty;
     [Key]
-    public Guid Pid  { get; set; }
+    public Guid Pid { get; set; }
     public User Author { get; set; } = null!;
     public Category Category { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -17,8 +19,9 @@ public class Article
 
     public Article()
     {
+
     }
-    
+
     public Article(string headLine, string body, Category category, User author, decimal shockValue)
     {
         this.HeadLine = headLine;
@@ -29,3 +32,4 @@ public class Article
         this.Category = category;
     }
 }
+

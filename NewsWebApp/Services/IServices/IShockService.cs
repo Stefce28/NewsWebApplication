@@ -1,4 +1,4 @@
-using NewsWebApp.Models;
+using NewsWebApp.Shared.Models;
 using NewsWebApp.ViewModels;
 
 namespace NewsWebApp.Services.IServices;

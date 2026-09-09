@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using NewsWebApp.Models;
+using NewsWebApp.Shared.Models;
 using NewsWebApp.Repository;
 using NewsWebApp.Services.IServices;
 

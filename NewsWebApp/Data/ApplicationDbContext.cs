@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NewsWebApp.Models;
+using NewsWebApp.Shared.Models;
 
 namespace NewsWebApp.Data;
 

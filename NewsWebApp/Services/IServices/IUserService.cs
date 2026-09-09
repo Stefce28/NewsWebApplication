@@ -1,4 +1,4 @@
-using NewsWebApp.Models;
+using NewsWebApp.Shared.Models;
 
 public interface IUserService
 {
