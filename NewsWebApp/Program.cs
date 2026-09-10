@@ -5,6 +5,7 @@ using NewsWebApp.Data;
 using NewsWebApp.Repository;
 using NewsWebApp.Services;
 using NewsWebApp.Services.IServices;
+using NewsWebApp.Shared.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

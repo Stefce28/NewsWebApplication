@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+namespace NewsWebApp.Shared.Models;
 
 public class User : IdentityUser<Guid>
 {

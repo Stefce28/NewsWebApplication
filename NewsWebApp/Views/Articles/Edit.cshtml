@@ -1,9 +1,9 @@
-@model NewsWebApp.Models.Article
+@model NewsWebApp.Shared.Models.Article
 
 @{
     ViewData["Title"] = "Edit Article";
-    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
-    var users = ViewBag.Users as List<User> ?? new List<User>();
+    var categories = ViewBag.Categories as List<NewsWebApp.Shared.Models.Category> ?? new List<NewsWebApp.Shared.Models.Category>();
+    var users = ViewBag.Users as List<NewsWebApp.Shared.Models.User> ?? new List<NewsWebApp.Shared.Models.User>();
     var postedHeadLine = ViewData.ModelState["headLine"]?.AttemptedValue ?? Model.HeadLine;
     var postedBody = ViewData.ModelState["body"]?.AttemptedValue ?? Model.Body;
     var postedCategory = ViewData.ModelState["categoryName"]?.AttemptedValue ?? Model.Category?.Name ?? "";

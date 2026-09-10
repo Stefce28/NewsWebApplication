@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using NewsWebApp.Models;
 
+
 namespace NewsWebApp.Controllers;
 
 public class HomeController : Controller

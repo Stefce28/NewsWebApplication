@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using NewsWebApp.Models;
+using NewsWebApp.Shared.Models;
 using NewsWebApp.Services.IServices;
 using NewsWebApp.ViewModels;
 

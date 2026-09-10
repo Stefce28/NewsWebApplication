@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NewsWebApp.Models;
+using NewsWebApp.Shared.Models;
 
 namespace NewsWebApp.Controllers;
 
