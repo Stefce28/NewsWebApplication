@@ -14,7 +14,7 @@
         HttpContext context,
         IConfiguration configuration)
         {
-            if(context.Request.Path.StartsWithSegments("/api"))
+            if(!context.Request.Path.StartsWithSegments("/api"))
             {
                 await _next(context);
                 return;

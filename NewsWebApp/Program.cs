@@ -86,6 +86,8 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+app.MapGet("/", () => Results.Redirect("/articles"));
+
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Articles}/{action=Index}/{id?}")

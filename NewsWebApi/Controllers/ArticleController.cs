@@ -19,6 +19,8 @@ namespace NewsWebApi.Controllers
 
         }
 
+        
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ArticleDTO>> GetById(Guid id)
         {
@@ -43,8 +45,7 @@ namespace NewsWebApi.Controllers
             return Ok(dto);
         }
 
-        [HttpPost]
-        [Route("/add")]
+        [HttpPost("add")]
         public async Task<ActionResult<ArticleDTO>> CreateArticleDto(CreateArticleDTO dto)
         {
             var article =  await _articleApiService.CretaeArticleDTO(dto);
