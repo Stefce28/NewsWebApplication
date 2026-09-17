@@ -6,6 +6,8 @@ public interface IArticleRepository
 {
     Task<List<Article>> GetArticles();
     Task<Article?> GetArticle(Guid id);
+    Task<Article?> GetArticleByHeadline(string headline);
+    Task<Article?> GetArticleBySourceUrl(string sourceUrl);
     Task<List<Article>> GetArticlesPage(int page, int pageSize);
     Task<List<Article>> GetArticlesByCategoryPage(string categoryName, int page, int pageSize);
     Task<List<Article>> GetArticlesByAuthorPage(Guid authorId, int page, int pageSize);

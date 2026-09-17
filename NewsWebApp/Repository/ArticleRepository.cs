@@ -33,6 +33,18 @@ public class ArticleRepository : IArticleRepository
             .FirstOrDefaultAsync(a => a.Pid == id);
     }
 
+    public async Task<Article?> GetArticleByHeadline(string headline)
+    {
+        return await ArticlesWithRelations()
+            .FirstOrDefaultAsync(a => a.HeadLine == headline);
+    }
+
+    public async Task<Article?> GetArticleBySourceUrl(string sourceUrl)
+    {
+        return await ArticlesWithRelations()
+            .FirstOrDefaultAsync(a => a.SourceUrl == sourceUrl);
+    }
+
     public async Task<List<Article>> GetArticlesPage(int page, int pageSize)
     {
         return await ArticlesWithRelations()

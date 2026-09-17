@@ -40,6 +40,7 @@ namespace NewsWebApi.Controllers
                     Name = article.Author.Name
                 },
                 CategoryName = article.Category.Name,
+                SourceUrl = article.SourceUrl,
                 CreatedAt = article.CreatedAt
             };
             return Ok(dto);
@@ -48,8 +49,21 @@ namespace NewsWebApi.Controllers
         [HttpPost("add")]
         public async Task<ActionResult<ArticleDTO>> CreateArticleDto(CreateArticleDTO dto)
         {
-            var article =  await _articleApiService.CretaeArticleDTO(dto);
-            return CreatedAtAction(nameof(GetById), new { id = article.Id }, article);
+            try
+            {
+                var result = await _articleApiService.CreateArticleDTO(dto);
+
+                if (!result.Created)
+                {
+                    return Ok(result.Article);
+                }
+
+                return CreatedAtAction(nameof(GetById), new { id = result.Article.Id }, result.Article);
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(exception.Message);
+            }
 
         }
     }

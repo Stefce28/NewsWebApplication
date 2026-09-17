@@ -183,11 +183,19 @@ namespace NewsWebApp.Migrations
                         .HasColumnType("numeric")
                         .HasDefaultValue(0m);
 
+                    b.Property<string>("SourceUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
                     b.HasKey("Pid");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("CategoryName");
+
+                    b.HasIndex("SourceUrl")
+                        .IsUnique()
+                        .HasFilter("\"SourceUrl\" IS NOT NULL");
 
                     b.ToTable("Articles");
                 });

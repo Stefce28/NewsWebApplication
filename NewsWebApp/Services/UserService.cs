@@ -28,6 +28,14 @@ public class UserService : IUserService
         return await _repository.GetUserById(id);
     }
 
+    public async Task<User?> GetUserByEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return null;
+
+        return await _userManager.FindByEmailAsync(email);
+    }
+
     public async Task<User?> UpdateUser(
         Guid id,
         string name,

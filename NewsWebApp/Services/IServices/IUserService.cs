@@ -6,6 +6,8 @@ public interface IUserService
 
     Task<User?> GetUserById(Guid id);
 
+    Task<User?> GetUserByEmail(string email);
+
     Task<User?> UpdateUser(
         Guid id,
         string name,

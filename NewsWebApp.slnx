@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="NewsWebApi/NewsWebApi.csproj" />
+  <Project Path="WebCrawler/WebCrawler.csproj" />
 </Solution>

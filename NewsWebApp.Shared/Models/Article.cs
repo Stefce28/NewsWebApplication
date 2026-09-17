@@ -16,13 +16,20 @@ public class Article
     public Category Category { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public decimal ShockValue { get; set; } = 0.0m;
+    public string? SourceUrl { get; set; }
 
     public Article()
     {
 
     }
 
-    public Article(string headLine, string body, Category category, User author, decimal shockValue)
+    public Article(
+        string headLine,
+        string body,
+        Category category,
+        User author,
+        decimal shockValue,
+        string? sourceUrl = null)
     {
         this.HeadLine = headLine;
         this.Body = body;
@@ -30,6 +37,7 @@ public class Article
         this.Author = author;
         this.ShockValue = shockValue;
         this.Category = category;
+        this.SourceUrl = sourceUrl;
     }
 }
 

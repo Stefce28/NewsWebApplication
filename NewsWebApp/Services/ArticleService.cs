@@ -25,6 +25,22 @@ public class ArticleService : IArticleService
         return await _articleRepository.GetArticle(id);
     }
 
+    public async Task<Article?> GetArticleByHeadline(string headline)
+    {
+        if (string.IsNullOrWhiteSpace(headline))
+            return null;
+
+        return await _articleRepository.GetArticleByHeadline(headline.Trim());
+    }
+
+    public async Task<Article?> GetArticleBySourceUrl(string sourceUrl)
+    {
+        if (string.IsNullOrWhiteSpace(sourceUrl))
+            return null;
+
+        return await _articleRepository.GetArticleBySourceUrl(sourceUrl.Trim());
+    }
+
     public async Task<List<Article>> GetArticles()
     {
         return await _articleRepository.GetArticles();
@@ -87,12 +103,13 @@ public class ArticleService : IArticleService
 
     }
 
-    public async Task<Article?> AddArticleAsync(String title, String content, Category? category,User? author, decimal shockValue)
+    public async Task<Article?> AddArticleAsync(String title, String content, Category? category,User? author, decimal shockValue, string? sourceUrl = null)
     {
         if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(content) || category == null || author == null)
             return null;
 
-        Article article = new Article(title, content, category, author, shockValue);
+        var normalizedSourceUrl = string.IsNullOrWhiteSpace(sourceUrl) ? null : sourceUrl.Trim();
+        Article article = new Article(title, content, category, author, shockValue, normalizedSourceUrl);
         await _articleRepository.SaveArticle(article);
         return article;
     }

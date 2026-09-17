@@ -57,6 +57,16 @@
         {
             <span>Редакција</span>
         }
+
+        @if (!string.IsNullOrWhiteSpace(Model.SourceUrl))
+        {
+            <span>Извор</span>
+            <a href="@Model.SourceUrl"
+               target="_blank"
+               rel="noopener noreferrer">
+                Original article
+            </a>
+        }
     </div>
 
     <div class="article-body">

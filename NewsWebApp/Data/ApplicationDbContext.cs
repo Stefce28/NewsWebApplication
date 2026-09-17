@@ -31,6 +31,15 @@ public class ApplicationDbContext
             .HasDefaultValue(0m);
 
         builder.Entity<Article>()
+            .Property(a => a.SourceUrl)
+            .HasMaxLength(2048);
+
+        builder.Entity<Article>()
+            .HasIndex(a => a.SourceUrl)
+            .IsUnique()
+            .HasFilter("\"SourceUrl\" IS NOT NULL");
+
+        builder.Entity<Article>()
             .HasOne(a => a.Author)
             .WithMany(u => u.Posts);
 

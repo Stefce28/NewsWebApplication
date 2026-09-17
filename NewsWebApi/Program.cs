@@ -32,6 +32,16 @@ builder.Services.AddScoped<ArticleApiService>();
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+    await dbContext.Database.MigrateAsync();
+    await DevelopmentDataSeeder.SeedAsync(dbContext, userManager);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

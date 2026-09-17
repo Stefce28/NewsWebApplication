@@ -70,7 +70,10 @@
         </div>
     </div>
 
-    <section class="shock-meter shock-meter-@shockStatus.LevelClass" aria-label="Your shock level">
+    <section class="shock-meter shock-meter-@shockStatus.LevelClass"
+             aria-label="Your shock level"
+             data-shock-meter
+             data-shock-status-url="@Url.Action("Status", "Shock")">
         <div class="site-container shock-meter-inner">
             <span class="shock-meter-label">YOUR SHOCK LEVEL</span>
 
@@ -78,11 +81,15 @@
                  role="progressbar"
                  aria-valuemin="0"
                  aria-valuemax="100"
-                 aria-valuenow="@shockStatus.CurrentPercentage">
-                <div class="shock-meter-fill" style="width: @(shockPercent)%"></div>
+                 aria-valuenow="@shockStatus.CurrentPercentage"
+                 data-shock-meter-track>
+                <div class="shock-meter-fill"
+                     style="width: @(shockPercent)%"
+                     data-shock-meter-fill></div>
             </div>
 
-            <strong class="shock-meter-value">@(shockStatus.CurrentPercentage)%</strong>
+            <strong class="shock-meter-value"
+                    data-shock-meter-value>@(shockStatus.CurrentPercentage)%</strong>
         </div>
     </section>
 </header>
