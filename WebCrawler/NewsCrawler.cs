@@ -59,6 +59,7 @@ public sealed class NewsCrawler
     private readonly IOptions<CrawlerOptions> _options;
     private readonly ILogger<NewsCrawler> _logger;
 
+    /// <summary>Constructs the crawler with its fetch, extraction, configuration and logging dependencies.</summary>
     public NewsCrawler(
         IHttpClientFactory httpClientFactory,
         ArticleExtractor articleExtractor,
@@ -71,6 +72,7 @@ public sealed class NewsCrawler
         _logger = logger;
     }
 
+    /// <summary>Discovers headline candidates and downloads only eligible articles.</summary>
     public async Task<IReadOnlyList<CrawledArticle>> CrawlAsync(CancellationToken cancellationToken)
     {
         var options = _options.Value;
@@ -96,8 +98,8 @@ public sealed class NewsCrawler
         }
 
         var visitedDiscoveryPages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var candidateUrls = new List<Uri>();
-        var candidateUrlSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var candidates = new Dictionary<Uri, List<string>>();
+        var headlineFilter = new HeadlineFilter(options.HeadlineFilter);
         var articles = new List<CrawledArticle>();
 
         while (discoveryQueue.Count > 0 &&
@@ -122,7 +124,7 @@ public sealed class NewsCrawler
             var document = new HtmlDocument();
             document.LoadHtml(page.Html);
 
-            foreach (var link in ExtractLinks(document, page.FinalUri))
+            foreach (var (link, headlines) in ExtractLinks(document, page.FinalUri))
             {
                 if (!IsDiscoverable(link, seedHosts))
                 {
@@ -131,10 +133,13 @@ public sealed class NewsCrawler
 
                 if (IsPotentialArticleUrl(link))
                 {
-                    if (candidateUrlSet.Add(link.AbsoluteUri))
+                    if (!candidates.TryGetValue(link, out var existingHeadlines))
                     {
-                        candidateUrls.Add(link);
+                        existingHeadlines = [];
+                        candidates.Add(link, existingHeadlines);
                     }
+
+                    existingHeadlines.AddRange(headlines);
 
                     continue;
                 }
@@ -147,6 +152,24 @@ public sealed class NewsCrawler
 
             await DelayAsync(options, cancellationToken);
         }
+
+        // Filter before the run limit so rejected links cannot crowd out eligible articles.
+        var candidateUrls = new List<Uri>();
+        foreach (var (uri, headlines) in candidates)
+        {
+            var decision = headlineFilter.Evaluate(headlines);
+            if (decision == HeadlineDecision.Accepted)
+            {
+                candidateUrls.Add(uri);
+            }
+            else
+            {
+                _logger.LogDebug("Skipping {Url}: headline filter returned {Decision}.", uri, decision);
+            }
+        }
+
+        _logger.LogInformation("Headline filter accepted {Accepted} of {Discovered} discovered article URLs.",
+            candidateUrls.Count, candidates.Count);
 
         foreach (var candidateUri in SelectArticleCandidates(candidateUrls, Math.Max(1, options.MaxArticlesPerRun)))
         {
@@ -170,6 +193,7 @@ public sealed class NewsCrawler
         return articles;
     }
 
+    /// <summary>Selects eligible URLs round-robin across sources within the run limit.</summary>
     private static IReadOnlyList<Uri> SelectArticleCandidates(IReadOnlyList<Uri> candidates, int maxArticles)
     {
         var groupedCandidates = candidates
@@ -200,6 +224,7 @@ public sealed class NewsCrawler
         return selectedCandidates;
     }
 
+    /// <summary>Fetches a page while preserving cancellation and logging network failures.</summary>
     private async Task<FetchedPage?> FetchPageAsync(Uri uri, CancellationToken cancellationToken)
     {
         try
@@ -238,7 +263,8 @@ public sealed class NewsCrawler
         }
     }
 
-    private static IEnumerable<Uri> ExtractLinks(HtmlDocument document, Uri baseUri)
+    /// <summary>Extracts URLs and available headline labels without requesting article pages.</summary>
+    private static IEnumerable<(Uri Uri, IReadOnlyList<string> Headlines)> ExtractLinks(HtmlDocument document, Uri baseUri)
     {
         var links = document.DocumentNode.SelectNodes("//a[@href]");
         if (links is null)
@@ -264,10 +290,19 @@ public sealed class NewsCrawler
                 continue;
             }
 
-            yield return NormalizeUri(uri);
+            // Keep all labels: a harmless title attribute must not hide a serious visible headline.
+            string[] headlines =
+            [
+                link.InnerText,
+                link.GetAttributeValue("title", string.Empty),
+                link.GetAttributeValue("aria-label", string.Empty),
+                link.SelectSingleNode(".//img[@alt]")?.GetAttributeValue("alt", string.Empty) ?? string.Empty
+            ];
+            yield return (NormalizeUri(uri), headlines);
         }
     }
 
+    /// <summary>Restricts discovery to configured sources and supported paths.</summary>
     private static bool IsDiscoverable(Uri uri, HashSet<string> seedHosts)
     {
         if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
@@ -291,6 +326,7 @@ public sealed class NewsCrawler
         return IsPotentialArticleUrl(uri) || IsListingUrl(uri);
     }
 
+    /// <summary>Identifies article-shaped URLs using the existing source routing conventions.</summary>
     private static bool IsPotentialArticleUrl(Uri uri)
     {
         var host = NormalizeHost(uri);
@@ -326,6 +362,7 @@ public sealed class NewsCrawler
         return segments.Length <= 2;
     }
 
+    /// <summary>Identifies home and category pages used for headline discovery.</summary>
     private static bool IsListingUrl(Uri uri)
     {
         var host = NormalizeHost(uri);
@@ -351,6 +388,7 @@ public sealed class NewsCrawler
         return false;
     }
 
+    /// <summary>Determines whether a response can be parsed as markup.</summary>
     private static bool IsHtml(string? contentType)
     {
         return string.IsNullOrWhiteSpace(contentType) ||
@@ -358,6 +396,7 @@ public sealed class NewsCrawler
                contentType.Contains("xml", StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>Respects the configured delay between source requests.</summary>
     private static async Task DelayAsync(CrawlerOptions options, CancellationToken cancellationToken)
     {
         if (options.RequestDelayMilliseconds > 0)
@@ -366,6 +405,7 @@ public sealed class NewsCrawler
         }
     }
 
+    /// <summary>Removes fragments and default ports for URL deduplication.</summary>
     private static Uri NormalizeUri(Uri uri)
     {
         var builder = new UriBuilder(uri)
@@ -382,6 +422,7 @@ public sealed class NewsCrawler
         return builder.Uri;
     }
 
+    /// <summary>Treats www and bare source hosts as the same source.</summary>
     private static string NormalizeHost(Uri uri)
     {
         return uri.Host.StartsWith("www.", StringComparison.OrdinalIgnoreCase)

@@ -10,6 +10,7 @@ public sealed class LlmArticleAnalyzer : IArticleAnalyzer
     public const string HttpClientName = "LlmArticleAnalysis";
 
     private const string OllamaProvider = "Ollama";
+    private const string OpenAiProvider = "OpenAI";
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -36,7 +37,7 @@ public sealed class LlmArticleAnalyzer : IArticleAnalyzer
     {
         var options = _options.Value;
         var llmOptions = options.Llm;
-        var provider = OllamaProvider;
+        var provider = NormalizeProvider(llmOptions.Provider);
 
         if (!llmOptions.Enabled)
         {
@@ -44,7 +45,7 @@ public sealed class LlmArticleAnalyzer : IArticleAnalyzer
         }
 
         if (IsOllamaCloud(llmOptions, provider) &&
-        string.IsNullOrWhiteSpace(llmOptions.ApiKey))
+            string.IsNullOrWhiteSpace(llmOptions.ApiKey))
         {
             _logger.LogWarning(
                 "Ollama Cloud analysis is enabled, but no Ollama API key is configured. " +
@@ -192,16 +193,7 @@ public sealed class LlmArticleAnalyzer : IArticleAnalyzer
         {
             model = llmOptions.Model,
             messages,
-            response_format = new
-            {
-                type = "json_schema",
-                json_schema = new
-                {
-                    name = "article_analysis",
-                    strict = true,
-                    schema = analysisSchema
-                }
-            },
+            response_format = new { type = "json_object" },
             temperature = 0.1
         };
     }
@@ -225,7 +217,7 @@ public sealed class LlmArticleAnalyzer : IArticleAnalyzer
                 role = "system",
                 content = string.Join(
                     Environment.NewLine,
-                     "You analyze Macedonian news articles for a news application.",
+                  "You analyze Macedonian news articles for a news application.",
                 "Return exactly one valid JSON object and no markdown.",
                 "Turn the headline and content/body of the article into a comedic, satirical, exaggerated or intentionally unrealistic version that people would find funny, surprising or shocking, while still keeping a recognizable connection to the original article.",
                 "You may add humorous fictional elements, references to current trends, comparisons with other events, Macedonian estrada, celebrities, politics, sports, internet culture or other relevant topics when they make the rewritten article funnier or more surprising.",                                       
@@ -343,6 +335,16 @@ public sealed class LlmArticleAnalyzer : IArticleAnalyzer
     {
         return provider == OllamaProvider &&
             llmOptions.ApiBaseUrl.Host.Equals("ollama.com", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string NormalizeProvider(string? provider)
+    {
+        if (provider?.Trim().Equals(OllamaProvider, StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return OllamaProvider;
+        }
+
+        return OpenAiProvider;
     }
 
     private static string ExtractJsonObject(string content)

@@ -56,7 +56,7 @@ builder.Services.AddHttpClient(LlmArticleAnalyzer.HttpClientName, (serviceProvid
 {
     var options = serviceProvider.GetRequiredService<IOptions<CrawlerOptions>>().Value.Llm;
 
-    client.BaseAddress = options.ApiBaseUrl;
+    client.BaseAddress = new Uri(options.ApiBaseUrl.ToString().TrimEnd('/') + "/");
     client.Timeout = TimeSpan.FromSeconds(Math.Max(5, options.TimeoutSeconds));
 
     if (!string.IsNullOrWhiteSpace(options.ApiKey))

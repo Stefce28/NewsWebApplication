@@ -43,6 +43,7 @@ public sealed partial class ArticleExtractor
         _options = options;
     }
 
+    /// <summary>Validates the source headline before extracting the body and category.</summary>
     public CrawledArticle? Extract(FetchedPage page)
     {
         var document = new HtmlDocument();
@@ -55,7 +56,9 @@ public sealed partial class ArticleExtractor
             GetNodeText(document, "//h1[contains(concat(' ', normalize-space(@class), ' '), ' entry-title ')]"),
             GetNodeText(document, "//h1")));
 
-        if (string.IsNullOrWhiteSpace(headline))
+        // The source title may differ from the listing label or redirect target.
+        if (string.IsNullOrWhiteSpace(headline) ||
+            new HeadlineFilter(_options.Value.HeadlineFilter).Evaluate([headline]) != HeadlineDecision.Accepted)
         {
             return null;
         }

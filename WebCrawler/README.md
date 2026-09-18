@@ -1,5 +1,35 @@
 # WebCrawler
 
+## Headline filtering
+
+Filtering is enabled by default under `Crawler:HeadlineFilter`. Listing pages are
+still downloaded for discovery, but article pages are requested only when their
+link text, title, accessible label or image alt text contains a configured comedy
+keyword and none of their labels contains a sensitive-topic keyword. Duplicate
+URLs are evaluated together, before the article limit and source balancing.
+Missing or unmatched headlines are skipped without an article request or LLM call.
+The extracted source headline is checked again before body extraction, since it
+may differ from its listing label. Accepted articles continue through the existing
+LLM rewrite and publishing pipeline.
+
+`ComedyKeywords` defaults to the 19 Macedonian hints in `HeadlineFilterOptions`.
+`SensitiveKeywords` excludes indicators of death, injury, war, violence and civil
+rights/repression topics, even when a comedy hint is present. Matching ignores
+case, normalizes Unicode/HTML entities and whitespace, and uses whole words or
+phrases. A trailing `*` explicitly matches word endings (for example `загина*`).
+Both arrays can be configured under `Crawler:HeadlineFilter`; with .NET indexed
+configuration binding, shorter arrays can retain later default entries, so review
+the effective list when overriding defaults. `Enabled=false` restores legacy
+unfiltered crawling.
+
+These are editorial heuristics, not a semantic safety classifier: figurative or
+theatrical tragedies can be excluded and unlisted sensitive wording can be missed.
+Ordinary funny stories without a configured hint are also skipped. Debug logs
+record rejection reasons and information logs report accepted/discovered counts.
+No additional model calls are made for filtering.
+
+Offline checks: `dotnet test WebCrawler.Tests/WebCrawler.Tests.csproj`.
+
 Runs a hosted news crawler that discovers Macedonian news articles, extracts article text, optionally asks an LLM to classify the article, and publishes new articles to the NewsWebApi.
 
 ## Schedule

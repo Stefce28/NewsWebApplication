@@ -3,7 +3,7 @@ namespace WebCrawler;
 public sealed class CrawlerOptions
 {
     public const string SectionName = "Crawler";
-    
+
     public Uri ApiBaseUrl { get; set; } = new("http://localhost:5010");
     public string ApiKey { get; set; } = "super-duper-key";
     public Guid? AuthorId { get; set; }
@@ -28,12 +28,13 @@ public sealed class CrawlerOptions
         "Култура"
     ];
 
+    public HeadlineFilterOptions HeadlineFilter { get; set; } = new();
+
     public LlmAnalysisOptions Llm { get; set; } = new();
     public List<string> SeedUrls { get; set; } =
     [
-        "https://trn.mk/",
-        "https://www.slobodenpecat.mk/",
-        "https://time.mk/"
+        "https://tocka.com.mk/"
+
     ];
 
     public TimeSpan EffectiveInterval =>
@@ -49,10 +50,10 @@ public sealed class CrawlerOptions
 public sealed class LlmAnalysisOptions
 {
     public bool Enabled { get; set; }
-    public Uri ApiBaseUrl { get; set; } = new("https://ollama.com/api/");
+    public Uri ApiBaseUrl { get; set; } = new("https://api.openai.com/v1/");
     public string ApiKey { get; set; } = string.Empty;
-    public string Model { get; set; } = "gemma4:31b";
+    public string Model { get; set; } = "gpt-4o-mini";
     public int MaxInputCharacters { get; set; } = 6_000;
     public int TimeoutSeconds { get; set; } = 45;
-    public string Provider { get; set; } = "Ollama";
+    public string Provider { get; set; } = "OpenAI";
 }
